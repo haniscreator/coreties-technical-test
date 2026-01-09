@@ -3,16 +3,23 @@ import useSWR from "swr";
 import { Shipment } from "@/types/shipment";
 import Navigation from "@/components/Navigation";
 
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function Home() {
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState(""); // What user types
   const [searchQuery, setSearchQuery] = useState(""); // What API uses
+  const [startDateInput, setStartDateInput] = useState<Date | null>(null);
+  const [startDateQuery, setStartDateQuery] = useState("");
+  const [endDateInput, setEndDateInput] = useState<Date | null>(null);
+  const [endDateQuery, setEndDateQuery] = useState("");
   const limit = 100;
 
   const { data: response, error, isLoading } = useSWR<{ data: Shipment[]; total: number }>(
-    `/api/shipments?page=${page}&limit=${limit}&search=${encodeURIComponent(searchQuery)}`,
+    `/api/shipments?page=${page}&limit=${limit}&search=${encodeURIComponent(searchQuery)}&startDate=${startDateQuery}&endDate=${endDateQuery}`,
     fetcher
   );
 
@@ -22,6 +29,18 @@ export default function Home() {
 
   const handleSearch = () => {
     setSearchQuery(searchInput);
+    setStartDateQuery(startDateInput ? startDateInput.toISOString().split('T')[0] : "");
+    setEndDateQuery(endDateInput ? endDateInput.toISOString().split('T')[0] : "");
+    setPage(1);
+  };
+
+  const handleReset = () => {
+    setSearchInput("");
+    setSearchQuery("");
+    setStartDateInput(null);
+    setStartDateQuery("");
+    setEndDateInput(null);
+    setEndDateQuery("");
     setPage(1);
   };
 
@@ -63,21 +82,56 @@ export default function Home() {
             Total shipments: {response?.total.toLocaleString() ?? 0}
           </p>
 
-          <div className="mb-6 flex gap-2">
-            <input
-              type="text"
-              placeholder="Search by company or commodity..."
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              className="w-full max-w-md px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-            />
-            <button
-              onClick={handleSearch}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
-            >
-              Search
-            </button>
+          <div className="mb-6 flex flex-col gap-4">
+            <div className="flex flex-col md:flex-row gap-4 items-end md:items-center">
+              <input
+                type="text"
+                placeholder="Search by company or commodity..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                className="w-full md:flex-1 px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+              />
+
+              <div className="flex gap-2 w-full md:w-auto">
+                <div className="relative">
+                  <DatePicker
+                    selected={startDateInput}
+                    onChange={(date) => setStartDateInput(date)}
+                    dateFormat="yyyy-MM-dd"
+                    placeholderText="Start Date"
+                    className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  />
+                </div>
+                <span className="self-center text-zinc-500">-</span>
+                <div className="relative">
+                  <DatePicker
+                    selected={endDateInput}
+                    onChange={(date) => setEndDateInput(date)}
+                    dateFormat="yyyy-MM-dd"
+                    placeholderText="End Date"
+                    className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-2 w-full md:w-auto">
+                <button
+                  onClick={handleSearch}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                >
+                  Search
+                </button>
+                {(searchQuery || startDateQuery || endDateQuery) && (
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 font-medium rounded-lg transition-colors border border-transparent hover:border-red-200 dark:hover:border-red-800"
+                  >
+                    Reset
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
 
           <div className="bg-white dark:bg-zinc-900 rounded-lg shadow overflow-hidden">

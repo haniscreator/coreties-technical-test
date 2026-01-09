@@ -20,18 +20,36 @@ export async function loadShipments(options?: {
   limit?: number;
   offset?: number;
   search?: string;
+  startDate?: string;
+  endDate?: string;
 }): Promise<{ data: Shipment[]; total: number }> {
   const limit = options?.limit ?? 100;
   const offset = options?.offset ?? 0;
   const search = options?.search?.trim() ?? "";
+  const startDate = options?.startDate?.trim() ?? "";
+  const endDate = options?.endDate?.trim() ?? "";
 
   let whereClause = "";
+  const conditions: string[] = [];
+
   if (search) {
-    whereClause = `
-      WHERE importer_name ILIKE '%${search}%' 
+    conditions.push(`(
+      importer_name ILIKE '%${search}%' 
       OR exporter_name ILIKE '%${search}%' 
       OR commodity_name ILIKE '%${search}%'
-    `;
+    )`);
+  }
+
+  if (startDate) {
+    conditions.push(`shipment_date >= '${startDate}'`);
+  }
+
+  if (endDate) {
+    conditions.push(`shipment_date <= '${endDate}'`);
+  }
+
+  if (conditions.length > 0) {
+    whereClause = `WHERE ${conditions.join(" AND ")}`;
   }
 
   const countResult = await query<{ total: number }>(
