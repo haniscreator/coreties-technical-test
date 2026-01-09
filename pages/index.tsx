@@ -31,8 +31,18 @@ export default function Home() {
 
   const handleSearch = () => {
     setSearchQuery(searchInput);
-    setStartDateQuery(startDateInput ? startDateInput.toISOString().split('T')[0] : "");
-    setEndDateQuery(endDateInput ? endDateInput.toISOString().split('T')[0] : "");
+
+    // Format dates manually to avoid timezone shifting (toISOString uses UTC)
+    // We want the literal date selected by the user in their local time.
+    const formatDate = (date: Date | null) => {
+      if (!date) return "";
+      const offset = date.getTimezoneOffset();
+      const localDate = new Date(date.getTime() - (offset * 60 * 1000));
+      return localDate.toISOString().split('T')[0];
+    };
+
+    setStartDateQuery(formatDate(startDateInput));
+    setEndDateQuery(formatDate(endDateInput));
     setMinWeightQuery(minWeightInput);
     setPage(1);
   };
