@@ -49,7 +49,7 @@ export async function getMonthlyVolume() {
   return query<{ month: string; kg: number; sort_date: string }>(`
     SELECT 
       strftime(shipment_date, '%b %Y') as month,
-      SUM(weight_metric_tonnes) as kg,
+      CAST(SUM(weight_metric_tonnes) AS DOUBLE) as kg,
       MIN(shipment_date) as sort_date
     FROM shipments
     GROUP BY month
