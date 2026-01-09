@@ -51,19 +51,70 @@ This document confirms that all requirements for the CoreTies Technical Test hav
 ---
 **Status:** ✅ All Requirements Completed & Verified
 
+---
 ## Testing Coverage
 [![CI/CD Pipeline](https://github.com/haniscreator/coreties-technical-test/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/haniscreator/coreties-technical-test/actions/workflows/ci-cd.yml)
 
-According to industry best practices, testing is a first-class citizen. To ensure code quality and reliability, I have implemented test coverage for both the backend and frontend. These tests are also integrated into the CI/CD pipeline and server deployment process.
+According to industry best practices, testing is a first-class citizen. To ensure code quality and reliability, I have implemented **22 comprehensive test cases** (11 Backend, 11 Frontend). These tests are integrated into the CI/CD pipeline and verified on every commit.
 
-### Backend Testing
-- **Analytics Logic**: Comprehensive unit tests in `backend.test.ts` verify core analytic functions including `getGlobalStats`, `getTopCommodities`, `getMonthlyVolume`, and `getIndustryStats`.
-- **Company Details**: Tests ensure correct aggregation of trading partners and role determination (Importer/Exporter/Both).
-- **Data Integrity**: Verifies correct calculation of weights and proper SQL query structures.
+### 🟢 Backend Testing (11 Tests)
+1. **Global Statistics** (`backend.test.ts`)
+   - Verifies aggregation of total shipments and weight.
+   - Calculates total importer and exporter counts.
+2. **Commodity Analytics** (`backend.test.ts`)
+   - Validates "Top 5 Commodities" sorting and weight summation.
+   - Ensures correct limit application.
+3. **Temporal Analysis** (`backend.test.ts`)
+   - Checks "Monthly Volume" data grouping by month.
+   - Verifies chronological sorting of time-series data.
+4. **Company Detail Logic** (`backend.test.ts`)
+   - Tests extraction of top trading partners for specific companies.
+   - Validates role determination logic (Importer vs Exporter vs Both).
+   - Handles edge cases (e.g., companies with no shipments).
+5. **Data Integrity** (`backend.test.ts`)
+   - Prevents SQL injection vulnerabilities using parameterized inputs.
+   - Ensures numerical precision for weight calculations.
 
-### Frontend Testing
-- **Component Rendering**: Unit tests for all major widgets (`chart_widget.test.tsx`, `pie_chart_widget.test.tsx`, `stats_cards.test.tsx`) ensure UI elements display correctly.
-- **User Interactions**: Tests cover critical user flows such as **pagination** (`pagination.test.tsx`) and **search/filtering** (`search_filter.test.tsx`).
-- **Integration**: `company_list.test.tsx` and `frontend.test.tsx` verify that components integration works as expected within the page structure.
+### 🔵 Frontend Testing (11 Tests)
+1. **Component Rendering**
+   - **Stats Cards** (`stats_cards.test.tsx` - 2 tests): Verifies display of total companies, weight, and proper formatting.
+   - **Charts** (`chart_widget.test.tsx`, `pie_chart_widget.test.tsx` - 2 tests): Ensures Bar and Pie charts render with correct data props.
+2. **User Interactions**
+   - **Pagination** (`pagination.test.tsx` - 2 tests): Validates "Next/Previous" button logic and API call triggers.
+   - **Search & Filter** (`search_filter.test.tsx` - 1 test): Tests real-time search input and filter selection behavior.
+3. **Integration & Flows**
+   - **Company List** (`company_list.test.tsx` - 2 tests): Verifies table row rendering and data mapping.
+   - **Page Structure** (`frontend.test.tsx` - 2 tests): confirm dashboard layout and navigation elements are present.
 
-This setup helps maintain stability, prevents regressions, and ensures a smooth and reliable deployment process.
+This comprehensive suite helps maintain stability, prevents regressions, and ensures a smooth and reliable deployment process.
+
+---
+
+## Data Flow Visualization
+Here is how we will process the raw shipment data into the final Company Analytics:
+
+```mermaid
+flowchart TD
+    Raw[Raw Shipment Data] -->|Extract| Importers[Importers List]
+    Raw -->|Extract| Exporters[Exporters List]
+    
+    subgraph Aggregation Process
+        Importers -->|Group by Name| ImpGroup[Unique Importers]
+        Exporters -->|Group by Name| ExpGroup[Unique Exporters]
+        
+        ImpGroup -->|Metrics| ImpMetrics[Count: Shipments\nSum: Weight]
+        ExpGroup -->|Metrics| ExpMetrics[Count: Shipments\nSum: Weight]
+        
+        ImpMetrics -->|Docs Union| Unified[Unified Company List]
+        ExpMetrics -->|Docs Union| Unified
+    end
+    
+    Unified -->|Final Combine| Final{Company Entity}
+    
+    Final -->|Calculated Fields| Fields[Name\nCountry\nTotal Shipments\nTotal Weight\nRole Tags]
+    
+    Fields --> UI[Frontend Table & Charts]
+```
+
+---
+
