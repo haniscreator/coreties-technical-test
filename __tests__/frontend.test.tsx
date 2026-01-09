@@ -1,7 +1,8 @@
-
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import CompanyDetail from '@/components/CompanyDetail';
+
+// Mock Recarts to avoid sizing issues in jsdom
 
 // Mock Recarts to avoid sizing issues in jsdom
 vi.mock('recharts', () => ({
@@ -12,15 +13,40 @@ vi.mock('recharts', () => ({
     YAxis: () => null,
     CartesianGrid: () => null,
     Tooltip: () => null,
+    PieChart: () => null,
+    Pie: () => null,
+    Cell: () => null,
+    Legend: () => null,
 }));
 
 // Mock SWR to control data fetching
 const mockSWR = vi.fn();
 // Default mock behavior
+// Default mock behavior
 mockSWR.mockReturnValue({ data: null, isLoading: false });
 
 vi.mock('swr', () => ({
-    default: (key: string) => mockSWR(key)
+    default: (key: string) => {
+        // Return different data based on key type
+        if (key === '/api/stats') {
+            return {
+                data: {
+                    stats: { totalImporters: 10, totalExporters: 5, totalShipments: 100, totalWeight: 50000 },
+                    monthlyVolume: [],
+                    topCommodities: [],
+                    industryStats: []
+                },
+                isLoading: false
+            };
+        }
+        if (key === '/api/countries') {
+            return { data: ['USA', 'Germany', 'China'], isLoading: false };
+        }
+        if (key && key.includes('/api/companies')) {
+            return mockSWR(key) || { data: { data: [], total: 0 }, isLoading: false };
+        }
+        return { data: null, isLoading: false };
+    }
 }));
 
 describe('Frontend Components', () => {
@@ -53,4 +79,5 @@ describe('Frontend Components', () => {
             expect(screen.getByText('Loading details...')).toBeInTheDocument();
         });
     });
+
 });
