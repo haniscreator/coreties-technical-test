@@ -252,9 +252,10 @@ export default function CompaniesPage() {
                       layout="vertical"
                       align="right"
                       verticalAlign="middle"
-                      formatter={(value, entry: any) => {
-                        const total = industryStats.reduce((sum: number, item: any) => sum + item.weight, 0);
-                        const percent = (entry.payload.weight / total * 100).toFixed(0);
+                      formatter={(value: string, entry: { payload?: unknown }) => {
+                        const total = industryStats.reduce((sum: number, item: { weight: number }) => sum + item.weight, 0);
+                        const p = entry.payload as { weight: number };
+                        const percent = (p.weight / total * 100).toFixed(0);
                         return <span className="text-zinc-500 dark:text-zinc-400 ml-2">{value} ({percent}%)</span>;
                       }}
                       wrapperStyle={{ paddingLeft: "10px" }}

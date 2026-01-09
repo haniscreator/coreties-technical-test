@@ -58,7 +58,7 @@ const statsDataMock = {
 const countriesMock = ['USA', 'Germany'];
 
 vi.mock('swr', () => ({
-    default: (key: string, _fetcher: unknown) => {
+    default: (key: string) => {
         if (key === '/api/stats') {
             return { data: statsDataMock, isLoading: false };
         }

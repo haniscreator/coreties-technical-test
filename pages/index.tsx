@@ -125,7 +125,7 @@ export default function Home() {
                 <div className="relative">
                   <DatePicker
                     selected={startDateInput}
-                    onChange={(date) => setStartDateInput(date)}
+                    onChange={(date: Date | null) => setStartDateInput(date)}
                     dateFormat="yyyy-MM-dd"
                     placeholderText="Start Date"
                     className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
@@ -135,7 +135,7 @@ export default function Home() {
                 <div className="relative">
                   <DatePicker
                     selected={endDateInput}
-                    onChange={(date) => setEndDateInput(date)}
+                    onChange={(date: Date | null) => setEndDateInput(date)}
                     dateFormat="yyyy-MM-dd"
                     placeholderText="End Date"
                     className="w-full px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
