@@ -16,10 +16,12 @@ export default function Home() {
   const [startDateQuery, setStartDateQuery] = useState("");
   const [endDateInput, setEndDateInput] = useState<Date | null>(null);
   const [endDateQuery, setEndDateQuery] = useState("");
+  const [minWeightInput, setMinWeightInput] = useState("");
+  const [minWeightQuery, setMinWeightQuery] = useState("");
   const limit = 100;
 
   const { data: response, error, isLoading } = useSWR<{ data: Shipment[]; total: number }>(
-    `/api/shipments?page=${page}&limit=${limit}&search=${encodeURIComponent(searchQuery)}&startDate=${startDateQuery}&endDate=${endDateQuery}`,
+    `/api/shipments?page=${page}&limit=${limit}&search=${encodeURIComponent(searchQuery)}&startDate=${startDateQuery}&endDate=${endDateQuery}&minWeight=${minWeightQuery}`,
     fetcher
   );
 
@@ -31,6 +33,7 @@ export default function Home() {
     setSearchQuery(searchInput);
     setStartDateQuery(startDateInput ? startDateInput.toISOString().split('T')[0] : "");
     setEndDateQuery(endDateInput ? endDateInput.toISOString().split('T')[0] : "");
+    setMinWeightQuery(minWeightInput);
     setPage(1);
   };
 
@@ -41,6 +44,8 @@ export default function Home() {
     setStartDateQuery("");
     setEndDateInput(null);
     setEndDateQuery("");
+    setMinWeightInput("");
+    setMinWeightQuery("");
     setPage(1);
   };
 
@@ -116,13 +121,24 @@ export default function Home() {
               </div>
 
               <div className="flex gap-2 w-full md:w-auto">
+                <input
+                  type="number"
+                  placeholder="Min Weight (MT)"
+                  value={minWeightInput}
+                  onChange={(e) => setMinWeightInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                  className="w-full md:w-32 px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                />
+              </div>
+
+              <div className="flex gap-2 w-full md:w-auto">
                 <button
                   onClick={handleSearch}
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
                 >
                   Search
                 </button>
-                {(searchQuery || startDateQuery || endDateQuery) && (
+                {(searchQuery || startDateQuery || endDateQuery || minWeightQuery) && (
                   <button
                     onClick={handleReset}
                     className="px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 font-medium rounded-lg transition-colors border border-transparent hover:border-red-200 dark:hover:border-red-800"

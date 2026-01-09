@@ -22,12 +22,14 @@ export async function loadShipments(options?: {
   search?: string;
   startDate?: string;
   endDate?: string;
+  minWeight?: number;
 }): Promise<{ data: Shipment[]; total: number }> {
   const limit = options?.limit ?? 100;
   const offset = options?.offset ?? 0;
   const search = options?.search?.trim() ?? "";
   const startDate = options?.startDate?.trim() ?? "";
   const endDate = options?.endDate?.trim() ?? "";
+  const minWeight = options?.minWeight;
 
   let whereClause = "";
   const conditions: string[] = [];
@@ -46,6 +48,10 @@ export async function loadShipments(options?: {
 
   if (endDate) {
     conditions.push(`shipment_date <= '${endDate}'`);
+  }
+
+  if (minWeight !== undefined && minWeight !== null) {
+    conditions.push(`weight_metric_tonnes >= ${minWeight}`);
   }
 
   if (conditions.length > 0) {
