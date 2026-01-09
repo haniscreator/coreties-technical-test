@@ -11,6 +11,10 @@ export default async function handler(
     return;
   }
 
-  const result = await loadShipments({limit: 100, offset: 0});
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 100;
+  const offset = (page - 1) * limit;
+
+  const result = await loadShipments({ limit, offset });
   res.status(200).json(result);
 }

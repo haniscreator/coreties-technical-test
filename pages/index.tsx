@@ -1,3 +1,4 @@
+import { useState } from "react";
 import useSWR from "swr";
 import { Shipment } from "@/types/shipment";
 import Navigation from "@/components/Navigation";
@@ -5,9 +6,17 @@ import Navigation from "@/components/Navigation";
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function Home() {
-  const { data: response, error, isLoading } = useSWR<{ data: Shipment[]; total: number }>("/api/shipments", fetcher);
+  const [page, setPage] = useState(1);
+  const limit = 100;
+
+  const { data: response, error, isLoading } = useSWR<{ data: Shipment[]; total: number }>(
+    `/api/shipments?page=${page}&limit=${limit}`,
+    fetcher
+  );
 
   const shipments = response?.data;
+  const total = response?.total ?? 0;
+  const totalPages = Math.ceil(total / limit);
 
   if (isLoading) {
     return (
@@ -104,11 +113,27 @@ export default function Home() {
                 </tbody>
               </table>
             </div>
-            {response && response.total > 100 && (
-              <div className="px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border-t border-zinc-200 dark:border-zinc-700">
+            {response && (
+              <div className="px-6 py-4 bg-zinc-50 dark:bg-zinc-800 border-t border-zinc-200 dark:border-zinc-700 flex items-center justify-between">
                 <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  Showing first 100 of {response.total.toLocaleString()} shipments
+                  Showing {((page - 1) * limit) + 1} to {Math.min(page * limit, total)} of {total.toLocaleString()} shipments
                 </p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setPage((p: number) => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                    className="px-3 py-1 text-sm font-medium rounded-md border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-200 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Previous
+                  </button>
+                  <button
+                    onClick={() => setPage((p: number) => Math.min(totalPages, p + 1))}
+                    disabled={page === totalPages}
+                    className="px-3 py-1 text-sm font-medium rounded-md border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-200 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Next
+                  </button>
+                </div>
               </div>
             )}
           </div>
