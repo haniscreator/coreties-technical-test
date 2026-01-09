@@ -17,9 +17,26 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function CompaniesPage() {
   const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
+  const [searchInput, setSearchInput] = useState("");
+  const [appliedSearch, setAppliedSearch] = useState("");
+
+  const handleSearch = () => {
+    setAppliedSearch(searchInput);
+    setSelectedCompany(null);
+  };
+
+  const handleReset = () => {
+    setSearchInput("");
+    setAppliedSearch("");
+    setSelectedCompany(null);
+  };
 
   const { data: statsData } = useSWR("/api/stats", fetcher);
-  const { data: companiesData } = useSWR("/api/companies", fetcher);
+  // Pass search parameter to the API
+  const { data: companiesData } = useSWR(
+    `/api/companies?search=${encodeURIComponent(appliedSearch)}`,
+    fetcher
+  );
 
   const stats = statsData?.stats;
   const monthlyVolume = statsData?.monthlyVolume || [];
@@ -151,6 +168,37 @@ export default function CompaniesPage() {
                   Click a company to view details
                 </p>
               </div>
+
+              {/* Search Bar */}
+              <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/20">
+                <div className="flex flex-col md:flex-row gap-4">
+                  <input
+                    type="text"
+                    placeholder="Search companies..."
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                    className="flex-1 px-4 py-2 rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleSearch}
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                    >
+                      Search
+                    </button>
+                    {appliedSearch && (
+                      <button
+                        onClick={handleReset}
+                        className="px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 font-medium rounded-lg transition-colors border border-transparent hover:border-red-200 dark:hover:border-red-800"
+                      >
+                        Reset
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>

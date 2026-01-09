@@ -88,7 +88,9 @@ export async function loadShipments(options?: {
  * Transform shipment data into company-level aggregates.
  * Your SQL should match the Company interface you define in types/company.ts
  */
-export async function transformShipmentsToCompanies(): Promise<Company[]> {
+export async function transformShipmentsToCompanies(search?: string): Promise<Company[]> {
+  const searchClause = search ? `HAVING name ILIKE '%${search}%'` : "";
+
   const sql = `
     WITH companies AS (
       SELECT 
@@ -125,6 +127,7 @@ export async function transformShipmentsToCompanies(): Promise<Company[]> {
       END AS role
     FROM companies
     GROUP BY name
+    ${searchClause}
     ORDER BY totalWeight DESC
   `;
 
