@@ -7,7 +7,7 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<{ data: Company[]; total: number } | { error: string }>
 ) {
-    const { search, role, country, page, limit } = req.query;
+    const { search, role, country, page, limit, sort, order } = req.query;
     try {
         const pageNum = parseInt(page as string) || 1;
         const limitNum = parseInt(limit as string) || 50;
@@ -17,7 +17,9 @@ export default async function handler(
             role as string,
             country as string,
             pageNum,
-            limitNum
+            limitNum,
+            sort as string,
+            order as 'asc' | 'desc'
         );
         res.status(200).json(result);
     } catch (error) {

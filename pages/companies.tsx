@@ -21,6 +21,8 @@ export default function CompaniesPage() {
   const [role, setRole] = useState("All");
   const [country, setCountry] = useState("All");
   const [page, setPage] = useState(1);
+  const [sortColumn, setSortColumn] = useState("totalWeight");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   const [appliedSearch, setAppliedSearch] = useState("");
   const [appliedRole, setAppliedRole] = useState("All");
@@ -36,6 +38,15 @@ export default function CompaniesPage() {
     setSelectedCompany(null);
   };
 
+  const handleSort = (column: string) => {
+    if (sortColumn === column) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortColumn(column);
+      setSortOrder("desc");
+    }
+  };
+
   const handleReset = () => {
     setSearch("");
     setRole("All");
@@ -44,6 +55,8 @@ export default function CompaniesPage() {
     setAppliedRole("All");
     setAppliedCountry("All");
     setPage(1);
+    setSortColumn("totalWeight");
+    setSortOrder("desc");
     setSelectedCompany(null);
   };
 
@@ -52,7 +65,7 @@ export default function CompaniesPage() {
 
   // Pass search parameter to the API
   const { data: companiesResponse } = useSWR(
-    `/api/companies?search=${encodeURIComponent(appliedSearch)}&role=${appliedRole}&country=${appliedCountry}&page=${page}&limit=${limit}`,
+    `/api/companies?search=${encodeURIComponent(appliedSearch)}&role=${appliedRole}&country=${appliedCountry}&page=${page}&limit=${limit}&sort=${sortColumn}&order=${sortOrder}`,
     fetcher
   );
 
@@ -229,7 +242,7 @@ export default function CompaniesPage() {
                     >
                       Search
                     </button>
-                    {(appliedSearch || appliedRole !== "All" || appliedCountry !== "All") && (
+                    {(appliedSearch || appliedRole !== "All" || appliedCountry !== "All" || sortColumn !== "totalWeight" || sortOrder !== "desc") && (
                       <button
                         onClick={handleReset}
                         className="px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 font-medium rounded-lg transition-colors border border-transparent hover:border-red-200 dark:hover:border-red-800"
@@ -245,8 +258,11 @@ export default function CompaniesPage() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-zinc-200 dark:border-zinc-800">
-                      <th className="text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider px-6 py-3">
-                        Company Name
+                      <th
+                        className="text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider px-6 py-3 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800 group"
+                        onClick={() => handleSort("name")}
+                      >
+                        Company Name {sortColumn === "name" ? (sortOrder === "asc" ? "▲" : "▼") : <span className="text-zinc-400 dark:text-zinc-500 opacity-0 group-hover:opacity-100 transition-opacity">↕</span>}
                       </th>
                       <th className="text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider px-6 py-3">
                         Country
@@ -254,11 +270,17 @@ export default function CompaniesPage() {
                       <th className="text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider px-6 py-3">
                         Role
                       </th>
-                      <th className="text-right text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider px-6 py-3">
-                        Shipments
+                      <th
+                        className="text-right text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider px-6 py-3 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800 group"
+                        onClick={() => handleSort("totalShipments")}
+                      >
+                        Shipments {sortColumn === "totalShipments" ? (sortOrder === "asc" ? "▲" : "▼") : <span className="text-zinc-400 dark:text-zinc-500 opacity-0 group-hover:opacity-100 transition-opacity">↕</span>}
                       </th>
-                      <th className="text-right text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider px-6 py-3">
-                        Total Weight
+                      <th
+                        className="text-right text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider px-6 py-3 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800 group"
+                        onClick={() => handleSort("totalWeight")}
+                      >
+                        Total Weight {sortColumn === "totalWeight" ? (sortOrder === "asc" ? "▲" : "▼") : <span className="text-zinc-400 dark:text-zinc-500 opacity-0 group-hover:opacity-100 transition-opacity">↕</span>}
                       </th>
                     </tr>
                   </thead>

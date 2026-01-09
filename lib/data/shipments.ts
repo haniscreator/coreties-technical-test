@@ -93,7 +93,9 @@ export async function transformShipmentsToCompanies(
   role?: string,
   country?: string,
   page: number = 1,
-  limit: number = 50
+  limit: number = 50,
+  sort: string = 'totalWeight',
+  order: 'asc' | 'desc' = 'desc'
 ): Promise<{ data: Company[]; total: number }> {
   const conditions = [];
 
@@ -167,11 +169,16 @@ export async function transformShipmentsToCompanies(
   `);
   const total = countResult[0]?.total ?? 0;
 
+  // Validate sort column
+  const validSortColumns = ['name', 'totalShipments', 'totalWeight'];
+  const sortColumn = validSortColumns.includes(sort) ? sort : 'totalWeight';
+  const sortOrder = order === 'asc' ? 'ASC' : 'DESC';
+
   // Get paginated data
   const data = await query<Company>(`
     ${cte}
     SELECT * FROM aggregated_companies
-    ORDER BY totalWeight DESC
+    ORDER BY ${sortColumn} ${sortOrder}
     LIMIT ${limit} OFFSET ${offset}
   `);
 
