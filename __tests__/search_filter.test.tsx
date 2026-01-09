@@ -14,7 +14,7 @@ vi.mock('@/components/CompanyDetail', () => ({
 
 // Mock Recharts
 vi.mock('recharts', () => ({
-    ResponsiveContainer: ({ children }: any) => <div className="recharts-responsive-container">{children}</div>,
+    ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div className="recharts-responsive-container">{children}</div>,
     BarChart: () => null,
     Bar: () => null,
     PieChart: () => null,
@@ -42,7 +42,7 @@ const countriesMock = ['USA', 'Germany'];
 const fetcherMock = vi.fn();
 
 vi.mock('swr', () => ({
-    default: (key: string, fetcher: any) => {
+    default: (key: string, _fetcher: unknown) => {
         if (key === '/api/stats') {
             return { data: statsDataMock, isLoading: false };
         }

@@ -1,6 +1,5 @@
 
 import { query } from "./shipments";
-import { Company } from '@/types/company';
 
 /**
  * Get global stats for the dashboard.

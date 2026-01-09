@@ -6,7 +6,7 @@ import CompanyDetail from '@/components/CompanyDetail';
 
 // Mock Recarts to avoid sizing issues in jsdom
 vi.mock('recharts', () => ({
-    ResponsiveContainer: ({ children }: any) => <div className="recharts-responsive-container">{children}</div>,
+    ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div className="recharts-responsive-container">{children}</div>,
     BarChart: () => <div className="recharts-bar-chart" />,
     Bar: () => null,
     XAxis: () => null,

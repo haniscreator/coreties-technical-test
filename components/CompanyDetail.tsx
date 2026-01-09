@@ -3,6 +3,18 @@ import { Company } from "@/types/company";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
+interface TradingPartner {
+  name: string;
+  country: string;
+  shipments: number;
+}
+
+interface Commodity {
+  name: string;
+  weight: number;
+}
+
+
 interface CompanyDetailProps {
   company: Company | null;
 }
@@ -67,7 +79,7 @@ export default function CompanyDetail({ company }: CompanyDetailProps) {
                 Top Trading Partners
               </h3>
               <div className="space-y-2">
-                {details.topTradingPartners.map((partner: any, idx: number) => (
+                {details.topTradingPartners.map((partner: TradingPartner, idx: number) => (
                   <div
                     key={idx}
                     className="flex items-center justify-between text-sm"
@@ -96,7 +108,7 @@ export default function CompanyDetail({ company }: CompanyDetailProps) {
                 Top Commodities
               </h3>
               <div className="space-y-2">
-                {details.topCommodities.map((commodity: any, idx: number) => (
+                {details.topCommodities.map((commodity: Commodity, idx: number) => (
                   <div
                     key={idx}
                     className="flex items-center justify-between text-sm"

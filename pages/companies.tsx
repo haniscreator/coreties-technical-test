@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Company } from "@/types/company";
 import Navigation from "@/components/Navigation";
 import CompanyDetail from "@/components/CompanyDetail";
 import {
@@ -138,7 +139,7 @@ export default function CompaniesPage() {
                 Top 5 Commodities by Weight
               </h2>
               <div className="space-y-3">
-                {topCommodities.map((item: any, idx: number) => (
+                {topCommodities.map((item: { commodity: string; kg: number }, idx: number) => (
                   <div key={idx} className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <span className="text-lg font-semibold text-zinc-400 dark:text-zinc-600">
@@ -223,7 +224,7 @@ export default function CompaniesPage() {
                       fill="#8884d8"
                       dataKey="weight"
                       nameKey="sector"
-                      label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+                      label={({ cx, cy, midAngle = 0, innerRadius, outerRadius, percent = 0 }) => {
                         const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
                         const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
                         const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
@@ -234,7 +235,7 @@ export default function CompaniesPage() {
                         ) : null;
                       }}
                     >
-                      {industryStats.map((entry: any, index: number) => (
+                      {industryStats.map((entry: { sector: string; weight: number }, index: number) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
@@ -245,7 +246,7 @@ export default function CompaniesPage() {
                         borderRadius: "6px",
                       }}
                       itemStyle={{ color: '#e4e4e7' }}
-                      formatter={(value: any) => [`${(value / 1000).toFixed(1)}k kg`, 'Weight']}
+                      formatter={(value: number | undefined) => [`${((value || 0) / 1000).toFixed(1)}k kg`, 'Weight']}
                     />
                     <Legend
                       layout="vertical"
@@ -365,7 +366,7 @@ export default function CompaniesPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {companies.map((company: any, idx: number) => (
+                    {companies.map((company: Company, idx: number) => (
                       <tr
                         key={idx}
                         onClick={() => setSelectedCompany(company.name)}
@@ -419,7 +420,7 @@ export default function CompaniesPage() {
 
             {/* Company Detail Panel (Right) */}
             <div className="bg-white dark:bg-zinc-900 rounded-lg shadow">
-              <CompanyDetail company={companies.find((c: any) => c.name === selectedCompany) || null} />
+              <CompanyDetail company={companies.find((c: Company) => c.name === selectedCompany) || null} />
             </div>
           </div>
         </div>

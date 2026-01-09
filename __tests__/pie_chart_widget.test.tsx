@@ -15,11 +15,11 @@ vi.mock('@/components/CompanyDetail', () => ({
 
 // Mock Recharts
 vi.mock('recharts', () => ({
-    ResponsiveContainer: ({ children }: any) => <div data-testid="chart-container">{children}</div>,
-    PieChart: ({ children }: any) => <div data-testid="pie-chart">{children}</div>,
-    Pie: ({ data, children, label }: any) => (
+    ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div data-testid="chart-container">{children}</div>,
+    PieChart: ({ children }: { children: React.ReactNode }) => <div data-testid="pie-chart">{children}</div>,
+    Pie: ({ data, children }: { data: { sector: string; weight: number }[]; children: React.ReactNode }) => (
         <div data-testid="pie">
-            {data?.map((item: any) => (
+            {data?.map((item: { sector: string; weight: number }) => (
                 <div key={item.sector} data-testid="pie-slice">
                     <span>{item.sector}</span>
                     <span>{item.weight}</span>
@@ -30,7 +30,7 @@ vi.mock('recharts', () => ({
     ),
     Cell: () => null,
     // Mock Legend to use the formatter prop if provided, which determines how items are rendered
-    Legend: ({ formatter, payload }: any) => {
+    Legend: () => {
         // In real Recharts, payload is derived from data. Here we don't have it automatically passed to Legend mock unless we wire it.
         // However, we see in companies.tsx that the formatter uses `industryStats` from the scope, OR expects `entry.payload`.
         // Since we can't easily mock the internal state of Recharts passing payload to Legend,

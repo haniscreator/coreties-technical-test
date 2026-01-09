@@ -1,6 +1,5 @@
-
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
 import CompaniesPage from '@/pages/companies';
 
 // Mock Navigation
@@ -15,7 +14,7 @@ vi.mock('@/components/CompanyDetail', () => ({
 
 // Mock Recharts (Not testing charts directly here, but need to prevent render issues)
 vi.mock('recharts', () => ({
-    ResponsiveContainer: ({ children }: any) => <div className="recharts-responsive-container">{children}</div>,
+    ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div className="recharts-responsive-container">{children}</div>,
     BarChart: () => null,
     Bar: () => null,
     PieChart: () => null,
@@ -29,11 +28,7 @@ vi.mock('recharts', () => ({
 }));
 
 // Hoist mocks
-const hacks = vi.hoisted(() => {
-    return {
-        fetcherMock: vi.fn()
-    };
-});
+
 
 // Mock Stats Data
 const statsDataMock = {
@@ -56,7 +51,7 @@ const countriesMock = ['USA', 'Germany'];
 const companyDataMock = { data: [], total: 0 };
 
 vi.mock('swr', () => ({
-    default: (key: string, fetcher: any) => {
+    default: (key: string, _fetcher: unknown) => {
         if (key === '/api/stats') {
             return { data: statsDataMock, isLoading: false };
         }

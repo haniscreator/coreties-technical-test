@@ -1,6 +1,6 @@
 
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import CompaniesPage from '@/pages/companies';
 
 // Mock Navigation
@@ -15,11 +15,11 @@ vi.mock('@/components/CompanyDetail', () => ({
 
 // Mock Recharts specifically to allow testing data rendering
 vi.mock('recharts', () => ({
-    ResponsiveContainer: ({ children }: any) => <div data-testid="chart-container">{children}</div>,
+    ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div data-testid="chart-container">{children}</div>,
     // Mock BarChart to actually render its data so we can assert it exists in the DOM
-    BarChart: ({ data, children }: any) => (
+    BarChart: ({ data, children }: { data: { month: string; kg: number }[]; children: React.ReactNode }) => (
         <div data-testid="bar-chart">
-            {data?.map((item: any) => (
+            {data?.map((item: { month: string; kg: number }) => (
                 <div key={item.month} data-testid="chart-item">
                     <span>{item.month}</span>
                     <span>{item.kg}</span>
