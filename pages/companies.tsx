@@ -243,6 +243,9 @@ export default function CompaniesPage() {
                       <th className="text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider px-6 py-3">
                         Country
                       </th>
+                      <th className="text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider px-6 py-3">
+                        Role
+                      </th>
                       <th className="text-right text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider px-6 py-3">
                         Shipments
                       </th>
@@ -266,6 +269,9 @@ export default function CompaniesPage() {
                         </td>
                         <td className="px-6 py-4 text-sm text-zinc-600 dark:text-zinc-400">
                           {company.country}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-zinc-600 dark:text-zinc-400">
+                          {company.role}
                         </td>
                         <td className="px-6 py-4 text-sm text-zinc-900 dark:text-zinc-50 text-right">
                           {company.totalShipments.toLocaleString()}
