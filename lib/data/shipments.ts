@@ -88,7 +88,13 @@ export async function loadShipments(options?: {
  * Transform shipment data into company-level aggregates.
  * Your SQL should match the Company interface you define in types/company.ts
  */
-export async function transformShipmentsToCompanies(search?: string, role?: string, country?: string): Promise<Company[]> {
+export async function transformShipmentsToCompanies(
+  search?: string,
+  role?: string,
+  country?: string,
+  page: number = 1,
+  limit: number = 50
+): Promise<{ data: Company[]; total: number }> {
   const conditions = [];
 
   if (search) {
@@ -110,8 +116,10 @@ export async function transformShipmentsToCompanies(search?: string, role?: stri
   }
 
   const havingClause = conditions.length > 0 ? `HAVING ${conditions.join(' AND ')}` : "";
+  const offset = (page - 1) * limit;
 
-  const sql = `
+  // CTE to aggregate data
+  const cte = `
     WITH companies AS (
       SELECT 
         importer_name AS name,
@@ -134,24 +142,40 @@ export async function transformShipmentsToCompanies(search?: string, role?: stri
         'Exporter' AS type
       FROM shipments
       GROUP BY exporter_name, exporter_country, exporter_website
+    ),
+    aggregated_companies AS (
+      SELECT 
+        name,
+        FIRST(country) as country,
+        FIRST(website) as website,
+        CAST(SUM(shipment_count) AS INTEGER) AS totalShipments,
+        CAST(SUM(total_weight) AS DOUBLE) AS totalWeight,
+        CASE 
+          WHEN COUNT(DISTINCT type) > 1 THEN 'Both'
+          ELSE FIRST(type)
+        END AS role
+      FROM companies
+      GROUP BY name
+      ${havingClause}
     )
-    SELECT 
-      name,
-      FIRST(country) as country,
-      FIRST(website) as website,
-      CAST(SUM(shipment_count) AS INTEGER) AS totalShipments,
-      CAST(SUM(total_weight) AS DOUBLE) AS totalWeight,
-      CASE 
-        WHEN COUNT(DISTINCT type) > 1 THEN 'Both'
-        ELSE FIRST(type)
-      END AS role
-    FROM companies
-    GROUP BY name
-    ${havingClause}
-    ORDER BY totalWeight DESC
   `;
 
-  return query<Company>(sql);
+  // Get total count
+  const countResult = await query<{ total: number }>(`
+    ${cte}
+    SELECT COUNT(*) as total FROM aggregated_companies
+  `);
+  const total = countResult[0]?.total ?? 0;
+
+  // Get paginated data
+  const data = await query<Company>(`
+    ${cte}
+    SELECT * FROM aggregated_companies
+    ORDER BY totalWeight DESC
+    LIMIT ${limit} OFFSET ${offset}
+  `);
+
+  return { data, total };
 }
 
 /**

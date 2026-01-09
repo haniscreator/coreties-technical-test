@@ -20,14 +20,19 @@ export default function CompaniesPage() {
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("All");
   const [country, setCountry] = useState("All");
+  const [page, setPage] = useState(1);
+
   const [appliedSearch, setAppliedSearch] = useState("");
   const [appliedRole, setAppliedRole] = useState("All");
   const [appliedCountry, setAppliedCountry] = useState("All");
+
+  const limit = 50;
 
   const handleSearch = () => {
     setAppliedSearch(search);
     setAppliedRole(role);
     setAppliedCountry(country);
+    setPage(1);
     setSelectedCompany(null);
   };
 
@@ -38,6 +43,7 @@ export default function CompaniesPage() {
     setAppliedSearch("");
     setAppliedRole("All");
     setAppliedCountry("All");
+    setPage(1);
     setSelectedCompany(null);
   };
 
@@ -45,15 +51,17 @@ export default function CompaniesPage() {
   const { data: countries } = useSWR<string[]>("/api/countries", fetcher);
 
   // Pass search parameter to the API
-  const { data: companiesData } = useSWR(
-    `/api/companies?search=${encodeURIComponent(appliedSearch)}&role=${appliedRole}&country=${appliedCountry}`,
+  const { data: companiesResponse } = useSWR(
+    `/api/companies?search=${encodeURIComponent(appliedSearch)}&role=${appliedRole}&country=${appliedCountry}&page=${page}&limit=${limit}`,
     fetcher
   );
 
   const stats = statsData?.stats;
   const monthlyVolume = statsData?.monthlyVolume || [];
   const topCommodities = statsData?.topCommodities || [];
-  const companies = companiesData || [];
+  const companies = companiesResponse?.data || [];
+  const totalCompanies = companiesResponse?.total || 0;
+  const totalPages = Math.ceil(totalCompanies / limit);
 
   return (
     <>
@@ -284,10 +292,26 @@ export default function CompaniesPage() {
                   </tbody>
                 </table>
               </div>
-              <div className="p-4 border-t border-zinc-200 dark:border-zinc-800">
+              <div className="p-4 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
                 <p className="text-xs text-zinc-500 dark:text-zinc-500">
-                  Showing all companies
+                  Showing {companies.length > 0 ? ((page - 1) * limit) + 1 : 0} to {Math.min(page * limit, totalCompanies)} of {totalCompanies.toLocaleString()} companies
                 </p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                    className="px-3 py-1 text-sm font-medium rounded-md border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-200 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Previous
+                  </button>
+                  <button
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={page === totalPages || totalPages === 0}
+                    className="px-3 py-1 text-sm font-medium rounded-md border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-200 bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Next
+                  </button>
+                </div>
               </div>
             </div>
 
