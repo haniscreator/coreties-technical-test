@@ -19,27 +19,34 @@ export default function CompaniesPage() {
   const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("All");
+  const [country, setCountry] = useState("All");
   const [appliedSearch, setAppliedSearch] = useState("");
   const [appliedRole, setAppliedRole] = useState("All");
+  const [appliedCountry, setAppliedCountry] = useState("All");
 
   const handleSearch = () => {
     setAppliedSearch(search);
     setAppliedRole(role);
+    setAppliedCountry(country);
     setSelectedCompany(null);
   };
 
   const handleReset = () => {
     setSearch("");
     setRole("All");
+    setCountry("All");
     setAppliedSearch("");
     setAppliedRole("All");
+    setAppliedCountry("All");
     setSelectedCompany(null);
   };
 
   const { data: statsData } = useSWR("/api/stats", fetcher);
+  const { data: countries } = useSWR<string[]>("/api/countries", fetcher);
+
   // Pass search parameter to the API
   const { data: companiesData } = useSWR(
-    `/api/companies?search=${encodeURIComponent(appliedSearch)}&role=${appliedRole}`,
+    `/api/companies?search=${encodeURIComponent(appliedSearch)}&role=${appliedRole}&country=${appliedCountry}`,
     fetcher
   );
 
@@ -195,6 +202,18 @@ export default function CompaniesPage() {
                     <option value="Exporter">Exporter</option>
                     <option value="Both">Both</option>
                   </select>
+                  <select
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    className="px-4 py-2 rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="All">All Countries</option>
+                    {countries?.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
                   <div className="flex gap-2">
                     <button
                       onClick={handleSearch}
@@ -202,7 +221,7 @@ export default function CompaniesPage() {
                     >
                       Search
                     </button>
-                    {(appliedSearch || appliedRole !== "All") && (
+                    {(appliedSearch || appliedRole !== "All" || appliedCountry !== "All") && (
                       <button
                         onClick={handleReset}
                         className="px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 font-medium rounded-lg transition-colors border border-transparent hover:border-red-200 dark:hover:border-red-800"
