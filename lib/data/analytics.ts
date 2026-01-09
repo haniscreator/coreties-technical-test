@@ -66,7 +66,7 @@ export async function getCompanyDetails(companyName: string) {
 
   // Top Commodities
   const commodities = await query<{ name: string; weight: number }>(`
-        SELECT commodity_name as name, SUM(weight_metric_tonnes) as weight
+        SELECT commodity_name as name, CAST(SUM(weight_metric_tonnes) AS DOUBLE) as weight
         FROM shipments
         WHERE importer_name = '${companyName.replace(/'/g, "''")}' OR exporter_name = '${companyName.replace(/'/g, "''")}'
         GROUP BY commodity_name
@@ -91,7 +91,7 @@ export async function getCompanyDetails(companyName: string) {
             WHERE exporter_name = '${companyName.replace(/'/g, "''")}'
             GROUP BY importer_name, importer_country
         )
-        SELECT name, country, SUM(shipments) as shipments
+        SELECT name, country, CAST(SUM(shipments) AS INTEGER) as shipments
         FROM partners
         GROUP BY name, country
         ORDER BY shipments DESC

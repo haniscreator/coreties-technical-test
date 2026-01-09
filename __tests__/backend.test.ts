@@ -1,7 +1,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { transformShipmentsToCompanies } from '@/lib/data/shipments';
-import { getGlobalStats, getTopCommodities, getMonthlyVolume } from '@/lib/data/analytics';
+import { getGlobalStats, getTopCommodities, getMonthlyVolume, getCompanyDetails } from '@/lib/data/analytics';
 
 describe('Backend Logic', () => {
 
@@ -95,6 +95,68 @@ describe('Backend Logic', () => {
 
             // Allow for small floating point differences
             expect(sumVolume).toBeCloseTo(stats.totalWeight, 1);
+        });
+    });
+
+    describe('getCompanyDetails', () => {
+        it('should return correct top commodities and trading partners', async () => {
+            const companyName = "ARNOLD UMFORMTECHNIK GmbH & Co. KG";
+            const details = await getCompanyDetails(companyName);
+
+            expect(details).toBeDefined();
+            expect(details).toHaveProperty('topCommodities');
+            expect(details).toHaveProperty('topTradingPartners');
+
+            expect(Array.isArray(details.topCommodities)).toBe(true);
+            expect(details.topCommodities.length).toBeLessThanOrEqual(5);
+            expect(Array.isArray(details.topTradingPartners)).toBe(true);
+            expect(details.topTradingPartners.length).toBeLessThanOrEqual(5);
+
+            if (details.topCommodities.length > 0) {
+                const commodity = details.topCommodities[0];
+                expect(commodity).toHaveProperty('name');
+                expect(commodity).toHaveProperty('weight');
+                expect(typeof commodity.weight).toBe('number');
+            }
+
+            // This company plays a dual role or at least is an exporter
+            if (details.topTradingPartners.length > 0) {
+                const partner = details.topTradingPartners[0];
+                expect(partner).toHaveProperty('name');
+                expect(partner).toHaveProperty('country');
+                expect(partner).toHaveProperty('shipments');
+                expect(typeof partner.shipments).toBe('number');
+            }
+        });
+
+        it('should return partners for an Importer', async () => {
+            // Mann+Hummel acts as Importer from ARNOLD...
+            const companyName = "Mann+Hummel Mexico S.A. de C.V.";
+            const details = await getCompanyDetails(companyName);
+
+            expect(details.topTradingPartners.some(p => p.name === "ARNOLD UMFORMTECHNIK GmbH & Co. KG")).toBe(true);
+        });
+
+        it('should return partners for an Exporter', async () => {
+            // Ahlstrom... acts as Exporter to Avery Dennison
+            const companyName = "Ahlstrom La Gere SAS Chemin";
+            const details = await getCompanyDetails(companyName);
+
+            expect(details.topTradingPartners.some(p => p.name === "Avery Dennison")).toBe(true);
+        });
+
+        it('should handle non-existent company gracefully', async () => {
+            const details = await getCompanyDetails("GhostCorp");
+            expect(details.topCommodities).toEqual([]);
+            expect(details.topTradingPartners).toEqual([]);
+        });
+
+        it('should handle special characters in company name', async () => {
+            // "O'Reilly" test
+            const details = await getCompanyDetails("O'Reilly Auto Parts");
+            // Should not throw error
+            expect(Array.isArray(details.topCommodities)).toBe(true);
+            expect(Array.isArray(details.topTradingPartners)).toBe(true);
         });
     });
 });
