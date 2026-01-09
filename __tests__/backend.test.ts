@@ -1,7 +1,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { transformShipmentsToCompanies } from '@/lib/data/shipments';
-import { getGlobalStats, getTopCommodities, getMonthlyVolume, getCompanyDetails } from '@/lib/data/analytics';
+import { getGlobalStats, getTopCommodities, getMonthlyVolume, getCompanyDetails, getIndustryStats } from '@/lib/data/analytics';
 
 describe('Backend Logic', () => {
 
@@ -95,6 +95,31 @@ describe('Backend Logic', () => {
 
             // Allow for small floating point differences
             expect(sumVolume).toBeCloseTo(stats.totalWeight, 1);
+        });
+    });
+
+    describe('getIndustryStats', () => {
+        it('should return industry statistics sorted by weight', async () => {
+            const stats = await getIndustryStats();
+
+            expect(stats).toBeDefined();
+            expect(Array.isArray(stats)).toBe(true);
+            expect(stats.length).toBeGreaterThan(0);
+
+            const firstEntry = stats[0];
+            expect(firstEntry).toHaveProperty('sector');
+            expect(firstEntry).toHaveProperty('weight');
+            expect(typeof firstEntry.weight).toBe('number');
+
+            // Check sorting (descending by weight)
+            for (let i = 0; i < stats.length - 1; i++) {
+                expect(stats[i].weight).toBeGreaterThanOrEqual(stats[i + 1].weight);
+            }
+
+            // Ensure no empty or null sectors
+            stats.forEach(entry => {
+                expect(entry.sector).toBeTruthy();
+            });
         });
     });
 
