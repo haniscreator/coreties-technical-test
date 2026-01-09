@@ -72,8 +72,8 @@ export async function transformShipmentsToCompanies(): Promise<Company[]> {
       name,
       FIRST(country) as country,
       FIRST(website) as website,
-      SUM(shipment_count)::INT AS totalShipments,
-      SUM(total_weight) AS totalWeight,
+      CAST(SUM(shipment_count) AS INTEGER) AS totalShipments,
+      CAST(SUM(total_weight) AS DOUBLE) AS totalWeight,
       CASE 
         WHEN COUNT(DISTINCT type) > 1 THEN 'Both'
         ELSE FIRST(type)
