@@ -50,3 +50,20 @@ This document confirms that all requirements for the CoreTies Technical Test hav
 
 ---
 **Status:** ✅ All Requirements Completed & Verified
+
+## Testing Coverage
+[![CI/CD Pipeline](https://github.com/haniscreator/coreties-technical-test/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/haniscreator/coreties-technical-test/actions/workflows/ci-cd.yml)
+
+According to industry best practices, testing is a first-class citizen. To ensure code quality and reliability, I have implemented test coverage for both the backend and frontend. These tests are also integrated into the CI/CD pipeline and server deployment process.
+
+### Backend Testing
+- **Analytics Logic**: Comprehensive unit tests in `backend.test.ts` verify core analytic functions including `getGlobalStats`, `getTopCommodities`, `getMonthlyVolume`, and `getIndustryStats`.
+- **Company Details**: Tests ensure correct aggregation of trading partners and role determination (Importer/Exporter/Both).
+- **Data Integrity**: Verifies correct calculation of weights and proper SQL query structures.
+
+### Frontend Testing
+- **Component Rendering**: Unit tests for all major widgets (`chart_widget.test.tsx`, `pie_chart_widget.test.tsx`, `stats_cards.test.tsx`) ensure UI elements display correctly.
+- **User Interactions**: Tests cover critical user flows such as **pagination** (`pagination.test.tsx`) and **search/filtering** (`search_filter.test.tsx`).
+- **Integration**: `company_list.test.tsx` and `frontend.test.tsx` verify that components integration works as expected within the page structure.
+
+This setup helps maintain stability, prevents regressions, and ensures a smooth and reliable deployment process.
