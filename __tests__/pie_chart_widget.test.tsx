@@ -103,8 +103,11 @@ describe('Pie Chart Widget', () => {
         // 20000
         expect(screen.getByText('20000')).toBeInTheDocument();
 
-        // Verify Legend is present
-        expect(screen.getByTestId('legend')).toBeInTheDocument();
+        // Verify Custom Legend items are present
+        // Since we removed the Recharts Legend, we check for the text in our custom legend div
+        // We expect "Technology (60%)" and "Agriculture (40%)" given the total weight of 50000
+        expect(screen.getByText('Technology (60%)')).toBeInTheDocument();
+        expect(screen.getByText('Agriculture (40%)')).toBeInTheDocument();
 
         // Verify Footer
         expect(screen.getByText('Based on commodity mapping')).toBeInTheDocument();
