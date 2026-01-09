@@ -23,6 +23,8 @@ export async function loadShipments(options?: {
   startDate?: string;
   endDate?: string;
   minWeight?: number;
+  sort?: string;
+  order?: 'asc' | 'desc';
 }): Promise<{ data: Shipment[]; total: number }> {
   const limit = options?.limit ?? 100;
   const offset = options?.offset ?? 0;
@@ -30,6 +32,8 @@ export async function loadShipments(options?: {
   const startDate = options?.startDate?.trim() ?? "";
   const endDate = options?.endDate?.trim() ?? "";
   const minWeight = options?.minWeight;
+  const sort = options?.sort ?? "shipment_date";
+  const order = options?.order ?? "desc";
 
   let whereClause = "";
   const conditions: string[] = [];
@@ -63,10 +67,15 @@ export async function loadShipments(options?: {
   );
   const total = countResult[0]?.total ?? 0;
 
+  // Validate sort column to prevent SQL injection
+  const validSortColumns = ['id', 'importer_name', 'importer_country', 'exporter_name', 'shipment_date', 'commodity_name', 'weight_metric_tonnes'];
+  const sortColumn = validSortColumns.includes(sort) ? sort : 'shipment_date';
+  const sortOrder = order === 'asc' ? 'ASC' : 'DESC';
+
   const data = await query<Shipment>(`
     SELECT * FROM shipments
     ${whereClause}
-    ORDER BY shipment_date DESC
+    ORDER BY ${sortColumn} ${sortOrder}
     LIMIT ${limit} OFFSET ${offset}
   `);
 

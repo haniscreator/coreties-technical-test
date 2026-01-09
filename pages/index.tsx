@@ -18,10 +18,12 @@ export default function Home() {
   const [endDateQuery, setEndDateQuery] = useState("");
   const [minWeightInput, setMinWeightInput] = useState("");
   const [minWeightQuery, setMinWeightQuery] = useState("");
+  const [sortColumn, setSortColumn] = useState("shipment_date");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const limit = 100;
 
   const { data: response, error, isLoading } = useSWR<{ data: Shipment[]; total: number }>(
-    `/api/shipments?page=${page}&limit=${limit}&search=${encodeURIComponent(searchQuery)}&startDate=${startDateQuery}&endDate=${endDateQuery}&minWeight=${minWeightQuery}`,
+    `/api/shipments?page=${page}&limit=${limit}&search=${encodeURIComponent(searchQuery)}&startDate=${startDateQuery}&endDate=${endDateQuery}&minWeight=${minWeightQuery}&sort=${sortColumn}&order=${sortOrder}`,
     fetcher
   );
 
@@ -47,6 +49,15 @@ export default function Home() {
     setPage(1);
   };
 
+  const handleSort = (column: string) => {
+    if (sortColumn === column) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortColumn(column);
+      setSortOrder("desc"); // Default to desc for new columns
+    }
+  };
+
   const handleReset = () => {
     setSearchInput("");
     setSearchQuery("");
@@ -56,6 +67,8 @@ export default function Home() {
     setEndDateQuery("");
     setMinWeightInput("");
     setMinWeightQuery("");
+    setSortColumn("shipment_date");
+    setSortOrder("desc");
     setPage(1);
   };
 
@@ -148,7 +161,7 @@ export default function Home() {
                 >
                   Search
                 </button>
-                {(searchQuery || startDateQuery || endDateQuery || minWeightQuery) && (
+                {(searchQuery || startDateQuery || endDateQuery || minWeightQuery || sortColumn !== "shipment_date" || sortOrder !== "desc") && (
                   <button
                     onClick={handleReset}
                     className="px-4 py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 font-medium rounded-lg transition-colors border border-transparent hover:border-red-200 dark:hover:border-red-800"
@@ -165,27 +178,28 @@ export default function Home() {
               <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800">
                 <thead className="bg-zinc-50 dark:bg-zinc-800">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                      ID
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                      Importer
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                      Country
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                      Exporter
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                      Date
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                      Commodity
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                      Weight (MT)
-                    </th>
+                    {[
+                      { key: 'id', label: 'ID' },
+                      { key: 'importer_name', label: 'Importer' },
+                      { key: 'importer_country', label: 'Country' },
+                      { key: 'exporter_name', label: 'Exporter' },
+                      { key: 'shipment_date', label: 'Date' },
+                      { key: 'commodity_name', label: 'Commodity' },
+                      { key: 'weight_metric_tonnes', label: 'Weight (MT)' },
+                    ].map((col) => (
+                      <th
+                        key={col.key}
+                        onClick={() => handleSort(col.key)}
+                        className="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors select-none"
+                      >
+                        <div className="flex items-center gap-1">
+                          {col.label}
+                          {sortColumn === col.key && (
+                            <span>{sortOrder === "asc" ? "↑" : "↓"}</span>
+                          )}
+                        </div>
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-zinc-900 divide-y divide-zinc-200 dark:divide-zinc-800">
