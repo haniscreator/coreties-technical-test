@@ -58,6 +58,24 @@ export async function getMonthlyVolume() {
 }
 
 /**
+ * Get industry stats (mapped from commodities)
+ */
+/**
+ * Get industry stats (using actual industry_sector field)
+ */
+export async function getIndustryStats() {
+  return query<{ sector: string; weight: number }>(`
+    SELECT 
+      industry_sector as sector,
+      CAST(SUM(weight_metric_tonnes) AS DOUBLE) as weight
+    FROM shipments
+    WHERE industry_sector IS NOT NULL AND industry_sector != ''
+    GROUP BY industry_sector
+    ORDER BY weight DESC
+  `);
+}
+
+/**
  * Get details for a specific company.
  */
 export async function getCompanyDetails(companyName: string) {
