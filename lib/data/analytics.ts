@@ -32,7 +32,7 @@ export async function getGlobalStats() {
  */
 export async function getTopCommodities() {
   return query<{ commodity: string; kg: number }>(`
-    SELECT commodity_name as commodity, SUM(weight_metric_tonnes) as kg
+    SELECT commodity_name as commodity, CAST(SUM(weight_metric_tonnes) AS DOUBLE) as kg
     FROM shipments
     GROUP BY commodity_name
     ORDER BY kg DESC

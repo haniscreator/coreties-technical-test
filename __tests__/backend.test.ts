@@ -1,13 +1,13 @@
 
 import { describe, it, expect } from 'vitest';
 import { transformShipmentsToCompanies } from '@/lib/data/shipments';
-import { getGlobalStats } from '@/lib/data/analytics';
+import { getGlobalStats, getTopCommodities } from '@/lib/data/analytics';
 
 describe('Backend Logic', () => {
 
     describe('transformShipmentsToCompanies', () => {
         it('should return a list of companies with aggregated data', async () => {
-            const companies = await transformShipmentsToCompanies();
+            const { data: companies } = await transformShipmentsToCompanies();
 
             expect(companies).toBeDefined();
             expect(Array.isArray(companies)).toBe(true);
@@ -37,6 +37,29 @@ describe('Backend Logic', () => {
             expect(stats).toHaveProperty('totalWeight');
 
             expect(stats.totalShipments).toBeGreaterThan(0);
+        });
+    });
+
+    describe('getTopCommodities', () => {
+        it('should return top 5 commodities sorted by weight', async () => {
+            const commodities = await getTopCommodities();
+
+            expect(commodities).toBeDefined();
+            expect(Array.isArray(commodities)).toBe(true);
+            expect(commodities.length).toBeLessThanOrEqual(5);
+
+            if (commodities.length > 0) {
+                const firstCommodity = commodities[0];
+                expect(firstCommodity).toHaveProperty('commodity');
+                expect(firstCommodity).toHaveProperty('kg');
+                expect(typeof firstCommodity.commodity).toBe('string');
+                expect(typeof firstCommodity.kg).toBe('number');
+
+                // Check sorting (descending)
+                for (let i = 0; i < commodities.length - 1; i++) {
+                    expect(commodities[i].kg).toBeGreaterThanOrEqual(commodities[i + 1].kg);
+                }
+            }
         });
     });
 });
