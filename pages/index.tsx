@@ -7,16 +7,23 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function Home() {
   const [page, setPage] = useState(1);
+  const [searchInput, setSearchInput] = useState(""); // What user types
+  const [searchQuery, setSearchQuery] = useState(""); // What API uses
   const limit = 100;
 
   const { data: response, error, isLoading } = useSWR<{ data: Shipment[]; total: number }>(
-    `/api/shipments?page=${page}&limit=${limit}`,
+    `/api/shipments?page=${page}&limit=${limit}&search=${encodeURIComponent(searchQuery)}`,
     fetcher
   );
 
   const shipments = response?.data;
   const total = response?.total ?? 0;
   const totalPages = Math.ceil(total / limit);
+
+  const handleSearch = () => {
+    setSearchQuery(searchInput);
+    setPage(1);
+  };
 
   if (isLoading) {
     return (
@@ -55,6 +62,23 @@ export default function Home() {
           <p className="text-zinc-600 dark:text-zinc-400 mb-8">
             Total shipments: {response?.total.toLocaleString() ?? 0}
           </p>
+
+          <div className="mb-6 flex gap-2">
+            <input
+              type="text"
+              placeholder="Search by company or commodity..."
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              className="w-full max-w-md px-4 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+            />
+            <button
+              onClick={handleSearch}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+            >
+              Search
+            </button>
+          </div>
 
           <div className="bg-white dark:bg-zinc-900 rounded-lg shadow overflow-hidden">
             <div className="overflow-x-auto">

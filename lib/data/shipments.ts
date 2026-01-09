@@ -19,17 +19,29 @@ async function getInstance(): Promise<DuckDBInstance> {
 export async function loadShipments(options?: {
   limit?: number;
   offset?: number;
+  search?: string;
 }): Promise<{ data: Shipment[]; total: number }> {
   const limit = options?.limit ?? 100;
   const offset = options?.offset ?? 0;
+  const search = options?.search?.trim() ?? "";
+
+  let whereClause = "";
+  if (search) {
+    whereClause = `
+      WHERE importer_name ILIKE '%${search}%' 
+      OR exporter_name ILIKE '%${search}%' 
+      OR commodity_name ILIKE '%${search}%'
+    `;
+  }
 
   const countResult = await query<{ total: number }>(
-    `SELECT COUNT(*) as total FROM shipments`
+    `SELECT COUNT(*) as total FROM shipments ${whereClause}`
   );
   const total = countResult[0]?.total ?? 0;
 
   const data = await query<Shipment>(`
     SELECT * FROM shipments
+    ${whereClause}
     ORDER BY shipment_date DESC
     LIMIT ${limit} OFFSET ${offset}
   `);
