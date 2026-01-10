@@ -3,12 +3,10 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   reactStrictMode: true,
-  experimental: {
-    serverComponentsExternalPackages: ["@duckdb/node-api"],
-    outputFileTracingIncludes: {
-      "/api/**/*": ["./data/**/*"],
-    },
-  } as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+  serverExternalPackages: ["@duckdb/node-api"],
+  outputFileTracingIncludes: {
+    "/api/**/*": ["./data/**/*"],
+  },
 };
 
 export default nextConfig;

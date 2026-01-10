@@ -30,10 +30,10 @@ interface MonthlyVolumeData {
 interface PieLabelProps {
     cx: number;
     cy: number;
-    midAngle: number;
-    innerRadius: number;
-    outerRadius: number;
-    percent: number;
+    midAngle?: number;
+    innerRadius?: number;
+    outerRadius?: number;
+    percent?: number;
 }
 
 interface ChartsSectionProps {
@@ -113,8 +113,8 @@ export default function ChartsSection({
                                         cx,
                                         cy,
                                         midAngle = 0,
-                                        innerRadius,
-                                        outerRadius,
+                                        innerRadius = 0,
+                                        outerRadius = 0,
                                         percent = 0,
                                     }: PieLabelProps) => {
                                         const radius =
