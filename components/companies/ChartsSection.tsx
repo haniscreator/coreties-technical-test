@@ -5,7 +5,6 @@ import {
     PieChart,
     Pie,
     Cell,
-    Legend,
     XAxis,
     YAxis,
     CartesianGrid,
@@ -22,8 +21,23 @@ const COLORS = [
     "#82ca9d",
 ];
 
+interface MonthlyVolumeData {
+    month: string;
+    kg: number;
+    sort_date?: string;
+}
+
+interface PieLabelProps {
+    cx: number;
+    cy: number;
+    midAngle: number;
+    innerRadius: number;
+    outerRadius: number;
+    percent: number;
+}
+
 interface ChartsSectionProps {
-    monthlyVolume: any[]; // Using any[] for now to match flexible types or strictly define: { month: string; kg: number }[]
+    monthlyVolume: MonthlyVolumeData[];
     industryStats: { sector: string; weight: number }[];
     industryTotalWeight: number;
 }
@@ -102,11 +116,13 @@ export default function ChartsSection({
                                         innerRadius,
                                         outerRadius,
                                         percent = 0,
-                                    }: any) => {
+                                    }: PieLabelProps) => {
                                         const radius =
                                             innerRadius + (outerRadius - innerRadius) * 0.5;
-                                        const x = cx + radius * Math.cos((-midAngle * Math.PI) / 180);
-                                        const y = cy + radius * Math.sin((-midAngle * Math.PI) / 180);
+                                        const x =
+                                            cx + radius * Math.cos((-midAngle * Math.PI) / 180);
+                                        const y =
+                                            cy + radius * Math.sin((-midAngle * Math.PI) / 180);
                                         return percent > 0.05 ? (
                                             <text
                                                 x={x}
@@ -122,7 +138,10 @@ export default function ChartsSection({
                                     }}
                                 >
                                     {industryStats.map(
-                                        (entry: { sector: string; weight: number }, index: number) => (
+                                        (
+                                            entry: { sector: string; weight: number },
+                                            index: number
+                                        ) => (
                                             <Cell
                                                 key={`cell-${index}`}
                                                 fill={COLORS[index % COLORS.length]}
