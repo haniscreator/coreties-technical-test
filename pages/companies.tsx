@@ -20,7 +20,11 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'
 
 // Data fetching hooks
 import useSWR from "swr";
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = async (url: string) => {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Failed to fetch");
+  return res.json();
+};
 
 export default function CompaniesPage() {
   const [selectedCompany, setSelectedCompany] = useState<string | null>(null);

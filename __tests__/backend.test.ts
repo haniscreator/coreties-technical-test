@@ -1,9 +1,39 @@
 
 import { describe, it, expect } from 'vitest';
-import { transformShipmentsToCompanies } from '@/lib/data/shipments';
+import { transformShipmentsToCompanies, loadShipments } from '@/lib/data/shipments';
 import { getGlobalStats, getTopCommodities, getMonthlyVolume, getCompanyDetails, getIndustryStats } from '@/lib/data/analytics';
 
 describe('Backend Logic', () => {
+
+    describe('loadShipments', () => {
+        it('should filter by minWeight (>= default)', async () => {
+            const { data } = await loadShipments({ minWeight: 10, sort: 'weight_metric_tonnes', order: 'asc' });
+            expect(data.length).toBeGreaterThan(0);
+            data.forEach(s => {
+                expect(s.weight_metric_tonnes).toBeGreaterThanOrEqual(10);
+            });
+        });
+
+        it('should filter by weight operator <=', async () => {
+            const { data } = await loadShipments({ minWeight: 50, weightOperator: '<=', sort: 'weight_metric_tonnes', order: 'desc' });
+            expect(data.length).toBeGreaterThan(0);
+            data.forEach(s => {
+                expect(s.weight_metric_tonnes).toBeLessThanOrEqual(50);
+            });
+        });
+
+        it('should filter by weight operator =', async () => {
+            // Find a weight that exists first
+            const { data: all } = await loadShipments({ limit: 1 });
+            const weight = all[0].weight_metric_tonnes;
+
+            const { data } = await loadShipments({ minWeight: weight, weightOperator: '=', sort: 'weight_metric_tonnes', order: 'asc' });
+            expect(data.length).toBeGreaterThan(0);
+            data.forEach(s => {
+                expect(s.weight_metric_tonnes).toBe(weight);
+            });
+        });
+    });
 
     describe('transformShipmentsToCompanies', () => {
         it('should return a list of companies with aggregated data', async () => {

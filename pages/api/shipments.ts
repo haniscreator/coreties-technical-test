@@ -18,11 +18,12 @@ export default async function handler(
     const startDate = (req.query.startDate as string) || "";
     const endDate = (req.query.endDate as string) || "";
     const minWeight = req.query.minWeight ? Number(req.query.minWeight) : undefined;
+    const weightOperator = (req.query.weightOperator as string) || ">=";
     const sort = (req.query.sort as string) || "shipment_date";
     const order = (req.query.order as 'asc' | 'desc') || "desc";
     const offset = (page - 1) * limit;
 
-    const result = await loadShipments({ limit, offset, search, startDate, endDate, minWeight, sort, order });
+    const result = await loadShipments({ limit, offset, search, startDate, endDate, minWeight, weightOperator, sort, order });
     res.status(200).json(result);
   } catch (error) {
     console.error("API Error loading shipments:", error);

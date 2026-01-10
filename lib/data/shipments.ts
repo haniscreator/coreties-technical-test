@@ -23,6 +23,7 @@ export async function loadShipments(options?: {
   startDate?: string;
   endDate?: string;
   minWeight?: number;
+  weightOperator?: string;
   sort?: string;
   order?: 'asc' | 'desc';
 }): Promise<{ data: Shipment[]; total: number }> {
@@ -32,6 +33,7 @@ export async function loadShipments(options?: {
   const startDate = options?.startDate?.trim() ?? "";
   const endDate = options?.endDate?.trim() ?? "";
   const minWeight = options?.minWeight;
+  const weightOperator = options?.weightOperator ?? ">=";
   const sort = options?.sort ?? "shipment_date";
   const order = options?.order ?? "desc";
 
@@ -55,7 +57,8 @@ export async function loadShipments(options?: {
   }
 
   if (minWeight !== undefined && minWeight !== null) {
-    conditions.push(`weight_metric_tonnes >= ${minWeight}`);
+    const operator = [">=", "=", "<="].includes(weightOperator) ? weightOperator : ">=";
+    conditions.push(`weight_metric_tonnes ${operator} ${minWeight}`);
   }
 
   if (conditions.length > 0) {
@@ -79,7 +82,12 @@ export async function loadShipments(options?: {
     LIMIT ${limit} OFFSET ${offset}
   `);
 
-  return { data, total };
+  const typedData = data.map(shipment => ({
+    ...shipment,
+    weight_metric_tonnes: Number(shipment.weight_metric_tonnes)
+  }));
+
+  return { data: typedData, total };
 }
 
 /**
