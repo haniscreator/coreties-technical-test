@@ -1,7 +1,15 @@
 # Project Completion Checklist
 
 This document confirms that all requirements for the CoreTies Technical Test have been successfully implemented and verified.
-
+## Table of Contents
+- [1. Domain Modeling & Types](#1-domain-modeling--types)
+- [2. Backend Logic (SQL)](#2-backend-logic-sql)
+- [3. API Development](#3-api-development)
+- [4. Frontend Integration](#4-frontend-integration)
+- [5. Code Quality & Best Practices](#5-code-quality--best-practices)
+- [6. Technology Stack](#6-technology-stack)
+- [7. Testing Coverage](#7-testing-coverage)
+- [8. Data Flow Visualization](#8-data-flow-visualization)
 ## 1. Domain Modeling & Types
 - [x] **Define `Company` Interface**
   - Implemented in `types/company.ts`
@@ -48,11 +56,21 @@ This document confirms that all requirements for the CoreTies Technical Test hav
 - [x] **SQL Complexity**
   - Demonstrated ability to write complex analytic queries (CTEs, `UNION ALL`, Window functions for `FIRST`).
 
+## 6. Technology Stack
+- **Framework**: Next.js 16 (App Router / Pages Router hybrid support)
+- **Core Library**: React 19
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **Data Fetching**: SWR (Stale-While-Revalidate)
+- **Data Visualization**: Recharts
+- **Database Engine**: DuckDB (High-performance analytical SQL)
+- **Testing**: Vitest & React Testing Library
+
 ---
 **Status:** ✅ All Requirements Completed & Verified
 
 ---
-## Testing Coverage
+## 7. Testing Coverage
 [![CI/CD Pipeline](https://github.com/haniscreator/coreties-technical-test/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/haniscreator/coreties-technical-test/actions/workflows/ci-cd.yml)
 
 According to industry best practices, testing is a first-class citizen. To ensure code quality and reliability, I have implemented **27 comprehensive test cases** (14 Backend, 13 Frontend). These tests are integrated into the CI/CD pipeline and verified on every commit.
@@ -95,7 +113,7 @@ This comprehensive suite helps maintain stability, prevents regressions, and ens
 
 ---
 
-## Data Flow Visualization
+## 8. Data Flow Visualization
 Here is how we will process the raw shipment data into the final Company Analytics:
 
 ```mermaid
