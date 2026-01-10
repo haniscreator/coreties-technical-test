@@ -3,6 +3,7 @@ import { Company } from "@/types/company";
 import Navigation from "@/components/Navigation";
 import CompanyDetail from "@/components/companies/CompanyDetail";
 import StatsCards from "@/components/companies/StatsCards";
+import CommoditiesCards from "@/components/companies/CommoditiesCards";
 import ChartsSection from "@/components/companies/ChartsSection";
 import CompanyList from "@/components/companies/CompanyList";
 import useSWR from "swr";
@@ -94,7 +95,10 @@ export default function CompaniesPage() {
             Companies Overview
           </h1>
 
-          <StatsCards stats={stats} topCommodities={topCommodities} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <StatsCards stats={stats} />
+            <CommoditiesCards topCommodities={topCommodities} />
+          </div>
 
           <ChartsSection
             monthlyVolume={monthlyVolume}
