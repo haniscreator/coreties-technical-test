@@ -55,9 +55,9 @@ This document confirms that all requirements for the CoreTies Technical Test hav
 ## Testing Coverage
 [![CI/CD Pipeline](https://github.com/haniscreator/coreties-technical-test/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/haniscreator/coreties-technical-test/actions/workflows/ci-cd.yml)
 
-According to industry best practices, testing is a first-class citizen. To ensure code quality and reliability, I have implemented **22 comprehensive test cases** (11 Backend, 11 Frontend). These tests are integrated into the CI/CD pipeline and verified on every commit.
+According to industry best practices, testing is a first-class citizen. To ensure code quality and reliability, I have implemented **27 comprehensive test cases** (14 Backend, 13 Frontend). These tests are integrated into the CI/CD pipeline and verified on every commit.
 
-### 🟢 Backend Testing (11 Tests)
+### 🟢 Backend Testing (14 Tests)
 1. **Global Statistics** (`backend.test.ts`)
    - Verifies aggregation of total shipments and weight.
    - Calculates total importer and exporter counts.
@@ -74,8 +74,11 @@ According to industry best practices, testing is a first-class citizen. To ensur
 5. **Data Integrity** (`backend.test.ts`)
    - Prevents SQL injection vulnerabilities using parameterized inputs.
    - Ensures numerical precision for weight calculations.
+6. **Advanced Filtering** (`backend.test.ts`)
+    - Validates weight filter operators (`>=`, `<=`, `=`).
+    - Ensures accurate filtering logic for shipment weights.
 
-### 🔵 Frontend Testing (11 Tests)
+### 🔵 Frontend Testing (13 Tests)
 1. **Component Rendering**
    - **Stats Cards** (`stats_cards.test.tsx` - 2 tests): Verifies display of total companies, weight, and proper formatting.
    - **Charts** (`chart_widget.test.tsx`, `pie_chart_widget.test.tsx` - 2 tests): Ensures Bar and Pie charts render with correct data props.
@@ -85,6 +88,8 @@ According to industry best practices, testing is a first-class citizen. To ensur
 3. **Integration & Flows**
    - **Company List** (`company_list.test.tsx` - 2 tests): Verifies table row rendering and data mapping.
    - **Page Structure** (`frontend.test.tsx` - 2 tests): confirm dashboard layout and navigation elements are present.
+4. **Utilities & Error Handling**
+   - **API Fetcher** (`utils.test.ts` - 2 tests): Verifies `fetcher` correctly handles successful responses and throws errors on failure, ensuring robust error management for `useSWR`.
 
 This comprehensive suite helps maintain stability, prevents regressions, and ensures a smooth and reliable deployment process.
 
