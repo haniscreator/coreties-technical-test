@@ -2,6 +2,7 @@
 import { describe, it, expect } from 'vitest';
 import { transformShipmentsToCompanies, loadShipments } from '@/lib/data/shipments';
 import { getGlobalStats, getTopCommodities, getMonthlyVolume, getCompanyDetails, getIndustryStats } from '@/lib/data/analytics';
+import { getCountries } from '@/lib/data/countries';
 
 describe('Backend Logic', () => {
 
@@ -32,6 +33,24 @@ describe('Backend Logic', () => {
             data.forEach(s => {
                 expect(s.weight_metric_tonnes).toBe(weight);
             });
+        });
+    });
+
+    describe('getCountries', () => {
+        it('should return a list of unique countries sorted alphabetically', async () => {
+            const countries = await getCountries();
+
+            expect(countries).toBeDefined();
+            expect(Array.isArray(countries)).toBe(true);
+            expect(countries.length).toBeGreaterThan(0);
+
+            // Check uniqueness and sorting
+            const unique = new Set(countries);
+            expect(unique.size).toBe(countries.length);
+
+            for (let i = 0; i < countries.length - 1; i++) {
+                expect(countries[i].localeCompare(countries[i + 1])).toBeLessThanOrEqual(0);
+            }
         });
     });
 

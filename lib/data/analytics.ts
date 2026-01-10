@@ -56,9 +56,7 @@ export async function getMonthlyVolume() {
   `);
 }
 
-/**
- * Get industry stats (mapped from commodities)
- */
+
 /**
  * Get industry stats (using actual industry_sector field)
  */
