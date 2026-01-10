@@ -7,11 +7,11 @@ interface Stats {
     totalWeight: number;
 }
 
-interface StatsCardsProps {
+interface StatsCardProps {
     stats: Stats | undefined;
 }
 
-export default function StatsCards({ stats }: StatsCardsProps) {
+export default function StatsCard({ stats }: StatsCardProps) {
     return (
         <div className="bg-white dark:bg-zinc-900 rounded-lg shadow p-6">
             <h2 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-4">

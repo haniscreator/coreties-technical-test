@@ -5,13 +5,13 @@ interface Commodity {
     kg: number;
 }
 
-interface CommoditiesCardsProps {
+interface CommoditiesCardProps {
     topCommodities: Commodity[];
 }
 
-export default function CommoditiesCards({
+export default function CommoditiesCard({
     topCommodities,
-}: CommoditiesCardsProps) {
+}: CommoditiesCardProps) {
     return (
         <div className="bg-white dark:bg-zinc-900 rounded-lg shadow p-6">
             <h2 className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-4">

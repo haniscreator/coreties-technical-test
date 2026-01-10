@@ -1,19 +1,19 @@
 import { describe, it, expect, afterEach } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
-import CommoditiesCards from "@/components/companies/CommoditiesCards";
+import CommoditiesCard from "@/components/companies/CommoditiesCard";
 
 afterEach(() => {
     cleanup();
 });
 
-describe("CommoditiesCards Component", () => {
+describe("CommoditiesCard Component", () => {
     const mockCommodities = [
         { commodity: "Rubber", kg: 500000 },
         { commodity: "Coffee", kg: 250000 },
     ];
 
     it("should render list of commodities correctly", () => {
-        render(<CommoditiesCards topCommodities={mockCommodities} />);
+        render(<CommoditiesCard topCommodities={mockCommodities} />);
 
         expect(screen.getByText("Top 5 Commodities by Weight")).toBeInTheDocument();
 
@@ -27,7 +27,7 @@ describe("CommoditiesCards Component", () => {
     });
 
     it("should handle empty list", () => {
-        render(<CommoditiesCards topCommodities={[]} />);
+        render(<CommoditiesCard topCommodities={[]} />);
         expect(screen.getAllByText("Top 5 Commodities by Weight").length).toBe(1);
         // Should not crash
     });

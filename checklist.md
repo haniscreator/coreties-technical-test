@@ -73,7 +73,7 @@ This document confirms that all requirements for the CoreTies Technical Test hav
 ## 7. Testing Coverage
 [![CI/CD Pipeline](https://github.com/haniscreator/coreties-technical-test/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/haniscreator/coreties-technical-test/actions/workflows/ci-cd.yml)
 
-According to industry best practices, testing is a first-class citizen. To ensure code quality and reliability, I have implemented **28 comprehensive test cases** (15 Backend, 13 Frontend). These tests are integrated into the CI/CD pipeline and verified on every commit.
+According to industry best practices, testing is a first-class citizen. To ensure code quality and reliability, I have implemented **30 comprehensive test cases** (15 Backend, 15 Frontend). These tests are integrated into the CI/CD pipeline and verified on every commit.
 
 ### 🟢 Backend Testing (15 Tests)
 1. **Global Statistics** (`backend.test.ts`)
@@ -96,9 +96,10 @@ According to industry best practices, testing is a first-class citizen. To ensur
     - Validates weight filter operators (`>=`, `<=`, `=`).
     - Ensures accurate filtering logic for shipment weights.
 
-### 🔵 Frontend Testing (13 Tests)
+### 🔵 Frontend Testing (15 Tests)
 1. **Component Rendering**
-   - **Stats Cards** (`stats_cards.test.tsx` - 2 tests): Verifies display of total companies, weight, and proper formatting.
+   - **Stats Cards** (`stats_card.test.tsx` - 2 tests): Verifies display of total companies, weight, and proper formatting via page integration.
+   - **Commodities Card** (`commodities_card.test.tsx` - 2 tests): Unit tests for the commodities list component, ensuring correct rendering and handling of empty states.
    - **Charts** (`chart_widget.test.tsx`, `pie_chart_widget.test.tsx` - 2 tests): Ensures Bar and Pie charts render with correct data props.
 2. **User Interactions**
    - **Pagination** (`pagination.test.tsx` - 2 tests): Validates "Next/Previous" button logic and API call triggers.

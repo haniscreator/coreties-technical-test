@@ -2,9 +2,10 @@ import { useState } from "react";
 import { Company } from "@/types/company";
 import Navigation from "@/components/Navigation";
 import CompanyDetail from "@/components/companies/CompanyDetail";
-import StatsCards from "@/components/companies/StatsCards";
-import CommoditiesCards from "@/components/companies/CommoditiesCards";
-import ChartsSection from "@/components/companies/ChartsSection";
+import StatsCard from "@/components/companies/StatsCard";
+import CommoditiesCard from "@/components/companies/CommoditiesCard";
+import MonthsCard from "@/components/companies/MonthsCard";
+import SectorsCard from "@/components/companies/SectorsCard";
 import CompanyList from "@/components/companies/CompanyList";
 import useSWR from "swr";
 
@@ -96,15 +97,17 @@ export default function CompaniesPage() {
           </h1>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <StatsCards stats={stats} />
-            <CommoditiesCards topCommodities={topCommodities} />
+            <StatsCard stats={stats} />
+            <CommoditiesCard topCommodities={topCommodities} />
           </div>
 
-          <ChartsSection
-            monthlyVolume={monthlyVolume}
-            industryStats={industryStats}
-            industryTotalWeight={industryTotalWeight}
-          />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <MonthsCard monthlyVolume={monthlyVolume} />
+            <SectorsCard
+              industryStats={industryStats}
+              industryTotalWeight={industryTotalWeight}
+            />
+          </div>
 
           {/* Master-Detail: Company List + Detail Panel */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
