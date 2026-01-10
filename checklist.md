@@ -76,23 +76,23 @@ This document confirms that all requirements for the CoreTies Technical Test hav
 According to industry best practices, testing is a first-class citizen. To ensure code quality and reliability, I have implemented **30 comprehensive test cases** (15 Backend, 15 Frontend). These tests are integrated into the CI/CD pipeline and verified on every commit.
 
 ### 🟢 Backend Testing (15 Tests)
-1. **Global Statistics** (`backend.test.ts`)
+1. **Global Statistics** (`backend.test.ts` - 4 tests)
    - Verifies aggregation of total shipments and weight.
    - Calculates total importer and exporter counts.
-2. **Commodity Analytics** (`backend.test.ts`)
+2. **Commodity Analytics** (`backend.test.ts` - 2 tests)
    - Validates "Top 5 Commodities" sorting and weight summation.
    - Ensures correct limit application.
-3. **Temporal Analysis** (`backend.test.ts`)
+3. **Temporal Analysis** (`backend.test.ts` - 2 tests)
    - Checks "Monthly Volume" data grouping by month.
    - Verifies chronological sorting of time-series data.
-4. **Company Detail Logic** (`backend.test.ts`)
+4. **Company Detail Logic** (`backend.test.ts` - 4 tests)
    - Tests extraction of top trading partners for specific companies.
    - Validates role determination logic (Importer vs Exporter vs Both).
    - Handles edge cases (e.g., companies with no shipments).
-5. **Data Integrity** (`backend.test.ts`)
+5. **Data Integrity** (`backend.test.ts` - 2 tests)
    - Prevents SQL injection vulnerabilities using parameterized inputs.
    - Ensures numerical precision for weight calculations.
-6. **Advanced Filtering** (`backend.test.ts`)
+6. **Advanced Filtering** (`backend.test.ts` - 1 test)
     - Validates weight filter operators (`>=`, `<=`, `=`).
     - Ensures accurate filtering logic for shipment weights.
 
