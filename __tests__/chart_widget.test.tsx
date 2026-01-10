@@ -9,7 +9,7 @@ vi.mock('@/components/Navigation', () => ({
 }));
 
 // Mock CompanyDetail
-vi.mock('@/components/CompanyDetail', () => ({
+vi.mock('@/components/companies/CompanyDetail', () => ({
     default: () => <div data-testid="company-detail">Company Detail</div>
 }));
 

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import CompanyDetail from '@/components/CompanyDetail';
+import CompanyDetail from '@/components/companies/CompanyDetail';
 
 // Mock Recarts to avoid sizing issues in jsdom
 

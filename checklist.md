@@ -73,9 +73,9 @@ This document confirms that all requirements for the CoreTies Technical Test hav
 ## 7. Testing Coverage
 [![CI/CD Pipeline](https://github.com/haniscreator/coreties-technical-test/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/haniscreator/coreties-technical-test/actions/workflows/ci-cd.yml)
 
-According to industry best practices, testing is a first-class citizen. To ensure code quality and reliability, I have implemented **27 comprehensive test cases** (14 Backend, 13 Frontend). These tests are integrated into the CI/CD pipeline and verified on every commit.
+According to industry best practices, testing is a first-class citizen. To ensure code quality and reliability, I have implemented **28 comprehensive test cases** (15 Backend, 13 Frontend). These tests are integrated into the CI/CD pipeline and verified on every commit.
 
-### 🟢 Backend Testing (14 Tests)
+### 🟢 Backend Testing (15 Tests)
 1. **Global Statistics** (`backend.test.ts`)
    - Verifies aggregation of total shipments and weight.
    - Calculates total importer and exporter counts.
