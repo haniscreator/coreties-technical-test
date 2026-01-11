@@ -1,80 +1,56 @@
-# Full-Stack Technical Assessment
+# 1) GitHub Repository
+Please clone the repository from the following link:
+[https://github.com/haniscreator/coreties-technical-test](https://github.com/haniscreator/coreties-technical-test)
 
-## Quick Start
+# 2) Requirements Checklist
+I have completed the assignment according to the requirements outlined in the README. Detailed explanations for each item can be found here:
 
-```bash
-npm install
-npm run dev
-```
+- ⚡ **Domain Modeling & Types**
+  [https://github.com/haniscreator/coreties-technical-test/blob/main/checklist.md#1-domain-modeling--types](https://github.com/haniscreator/coreties-technical-test/blob/main/checklist.md#1-domain-modeling--types)
 
-Open [http://localhost:3000](http://localhost:3000)
+- ⚡ **Backend Logic (SQL)**
+  [https://github.com/haniscreator/coreties-technical-test/blob/main/checklist.md#2-backend-logic-sql](https://github.com/haniscreator/coreties-technical-test/blob/main/checklist.md#2-backend-logic-sql)
 
----
+- ⚡ **API Development**
+  [https://github.com/haniscreator/coreties-technical-test/blob/main/checklist.md#3-api-development](https://github.com/haniscreator/coreties-technical-test/blob/main/checklist.md#3-api-development)
 
-## Your Tasks
+- ⚡ **Frontend Integration**
+  [https://github.com/haniscreator/coreties-technical-test/blob/main/checklist.md#4-frontend-integration](https://github.com/haniscreator/coreties-technical-test/blob/main/checklist.md#4-frontend-integration)
 
-Transform shipment data into company analytics. The `/companies` page has scaffolded UI with fake data - wire it up with real SQL queries.
+- ⚡ **Code Quality & Best Practices**
+  [https://github.com/haniscreator/coreties-technical-test/blob/main/checklist.md#5-code-quality--best-practices](https://github.com/haniscreator/coreties-technical-test/blob/main/checklist.md#5-code-quality--best-practices)
 
-### Checklist
+# 3) Demo Videos
+- ⚡ **Assignment Demo Video**
+  [https://drive.google.com/file/d/1efF9UWdSPSD2BGV8bte9JVCXFRQc0KHi/view?usp=sharing](https://drive.google.com/file/d/1efF9UWdSPSD2BGV8bte9JVCXFRQc0KHi/view?usp=sharing)
 
-- [ ] Define `Company` interface in [`types/company.ts`](types/company.ts)
-- [ ] Implement `transformShipmentsToCompanies()` in [`lib/data/shipments.ts`](lib/data/shipments.ts) using SQL
-- [ ] Create API endpoint(s) in `pages/api/`
-- [ ] Wire up "Total Companies" card (count importers/exporters)
-- [ ] Wire up "Top 5 Commodities" card (aggregate by weight)
-- [ ] Wire up "Monthly Volume" chart (kg per month)
-- [ ] Display company list table with real aggregated data
-- [ ] Implement company detail panel (loads when clicking a company)
+- ⚡ **Project Structure Explain Video**
+  [https://drive.google.com/file/d/1OyNjGyj_6J00Lju6iaIcnx6yZ2jq08qY/view?usp=sharing](https://drive.google.com/file/d/1OyNjGyj_6J00Lju6iaIcnx6yZ2jq08qY/view?usp=sharing)
 
----
+# 4) Testing Coverage & CI/CD Pipeline
+In line with industry best practices, I implemented unit tests for the backend and UI tests for the frontend, all integrated into the CI/CD pipeline. More details can be found here:
+[https://github.com/haniscreator/coreties-technical-test/blob/main/checklist.md#7-testing-coverage](https://github.com/haniscreator/coreties-technical-test/blob/main/checklist.md#7-testing-coverage)
 
-## What We're Evaluating
+# 5) Technology Stack
+The full list of technologies used in this assignment is documented here:
+[https://github.com/haniscreator/coreties-technical-test/blob/main/checklist.md#6-technology-stack](https://github.com/haniscreator/coreties-technical-test/blob/main/checklist.md#6-technology-stack)
 
-- **SQL** - aggregations, GROUP BY, filtering, date functions
-- **Full-stack integration** - API design, data flow, frontend state
-- **Domain modeling** - how you structure the Company type
-- **Code clarity** - readable, maintainable code
+# 6) Data Flow Analysis
+Before starting development, I performed data analysis and flow design:
 
----
+- **Converted the provided JSON data into a Google Sheet for analysis:**
+  [https://docs.google.com/spreadsheets/d/1ZZhS2TKr6bbBMJBq52Hk7L6otXZarXpdcHOzHpCk8KI/edit?usp=sharing](https://docs.google.com/spreadsheets/d/1ZZhS2TKr6bbBMJBq52Hk7L6otXZarXpdcHOzHpCk8KI/edit?usp=sharing)
 
-## Supplemental Material
+- **Designed the data flow diagram based on the analysis:**
+  [https://github.com/haniscreator/coreties-technical-test/blob/main/checklist.md#8-data-flow-visualization](https://github.com/haniscreator/coreties-technical-test/blob/main/checklist.md#8-data-flow-visualization)
 
-### About the Data
+# 7) Production-Ready Deployment
+To reflect a real-world development workflow, I implemented a full CI/CD pipeline:
 
-~5,000 shipment records in [`data/shipments.json`](data/shipments.json):
+1. Local development
+2. Run test cases
+3. Git push
+4. GitHub Actions run automatically (all tests must pass)
+5. Automatic deployment to Render
 
-```ts
-interface Shipment {
-  id: string;
-  importer_name: string;
-  importer_country: string;
-  importer_website: string;
-  exporter_name: string;
-  exporter_country: string;
-  exporter_website: string;
-  shipment_date: string;        // ISO-8601
-  commodity_name: string;
-  industry_sector: string;
-  weight_metric_tonnes: number;
-}
-```
-
-### SQL Reference
-
-Data is pre-loaded into a `shipments` table. Use the `query()` helper:
-
-```ts
-import { query } from "@/lib/data/shipments";
-
-const results = await query<{ name: string; total: number }>(`
-  SELECT importer_name as name, COUNT(*) as total
-  FROM shipments
-  GROUP BY importer_name
-`);
-```
-
-DuckDB date functions: [duckdb.org/docs/sql/functions/date](https://duckdb.org/docs/sql/functions/date)
-
-### Context
-
-[Coreties](https://www.coreties.com/) analyzes shipment customs data. A "shipment" = goods moving from an exporter (seller) to an importer (buyer) across countries.
+🚀 **Live deployment available at:** [https://coreties-technical-test.onrender.com/](https://coreties-technical-test.onrender.com/)
