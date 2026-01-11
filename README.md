@@ -28,6 +28,8 @@ I have completed the assignment according to the requirements outlined in the RE
   [https://drive.google.com/file/d/1OyNjGyj_6J00Lju6iaIcnx6yZ2jq08qY/view?usp=sharing](https://drive.google.com/file/d/1OyNjGyj_6J00Lju6iaIcnx6yZ2jq08qY/view?usp=sharing)
 
 # 4) Testing Coverage & CI/CD Pipeline
+[![CI/CD Pipeline](https://github.com/haniscreator/coreties-technical-test/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/haniscreator/coreties-technical-test/actions/workflows/ci-cd.yml)
+
 In line with industry best practices, I implemented unit tests for the backend and UI tests for the frontend, all integrated into the CI/CD pipeline. More details can be found here:
 [https://github.com/haniscreator/coreties-technical-test/blob/main/checklist.md#7-testing-coverage](https://github.com/haniscreator/coreties-technical-test/blob/main/checklist.md#7-testing-coverage)
 
@@ -47,10 +49,10 @@ Before starting development, I performed data analysis and flow design:
 # 7) Production-Ready Deployment
 To reflect a real-world development workflow, I implemented a full CI/CD pipeline:
 
-1. Local development
-2. Run test cases
+5. Local development
+4. Run test cases
 3. Git push
-4. GitHub Actions run automatically (all tests must pass)
-5. Automatic deployment to Render
+2. GitHub Actions run automatically (all tests must pass)
+1. Automatic deployment to Render
 
 🚀 **Live deployment available at:** [https://coreties-technical-test.onrender.com/](https://coreties-technical-test.onrender.com/)
