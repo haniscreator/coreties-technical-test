@@ -54,6 +54,6 @@ To reflect a real-world development workflow, I implemented a full CI/CD pipelin
  - 3️⃣ Git push
  - 2️⃣ GitHub Actions run automatically (all tests must pass)
  - 1️⃣ Automatic deployment to Render
- 🚀 **Live deployment available at:** [https://coreties-technical-test.onrender.com/](https://coreties-technical-test.onrender.com/)
+ - 🚀 **Live deployment available at:** [https://coreties-technical-test.onrender.com/](https://coreties-technical-test.onrender.com/)
 
 
