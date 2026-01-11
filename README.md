@@ -49,11 +49,11 @@ Before starting development, I performed data analysis and flow design:
 # 7) Production-Ready Deployment
 To reflect a real-world development workflow, I implemented a full CI/CD pipeline:
 
- 5️⃣ Local development
- 4️⃣ Run test cases
- 3️⃣ Git push
- 2️⃣ GitHub Actions run automatically (all tests must pass)
- 1️⃣ Automatic deployment to Render
+ - 5️⃣ Local development
+ - 4️⃣ Run test cases
+ - 3️⃣ Git push
+ - 2️⃣ GitHub Actions run automatically (all tests must pass)
+ - 1️⃣ Automatic deployment to Render
  🚀 **Live deployment available at:** [https://coreties-technical-test.onrender.com/](https://coreties-technical-test.onrender.com/)
 
- 
+
